@@ -7,19 +7,32 @@ import com.example.springbootbase.exception.NotFoundException;
 import com.example.springbootbase.repository.UserRepository;
 import com.example.springbootbase.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,12 +50,13 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setRole(UserRole.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> find(Long id) {
         return userRepository.findById(id);
     }
 
@@ -57,11 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(Long id, User updatedUser) throws NotFoundException, ConflictException {
-        Optional<User> userOptional = userRepository.findById(id);
+    public User updateByUsername(String username, User updatedUser) throws NotFoundException, ConflictException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
-            String message = "User with the id " + id + " does not exist";
+            String message = "User with the username " + username + " does not exist";
             log.error(message);
             throw new NotFoundException(message);
         }
@@ -80,7 +94,7 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException(message);
         }
 
-        updatedUser.setId(id);
+        updatedUser.setId(user.getId());
         updatedUser.setPassword(user.getPassword());
         updatedUser.setRole(user.getRole());
 
@@ -88,27 +102,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Long id, String password) throws NotFoundException {
-        Optional<User> userOptional = userRepository.findById(id);
+    public User updatePasswordByUsername(String username, String password) throws NotFoundException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
-            String message = "User with the id " + id + " does not exist";
+            String message = "User with the username " + username + " does not exist";
             log.error(message);
             throw new NotFoundException(message);
         }
 
         User user = userOptional.get();
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
-    public void updateRole(Long id, UserRole role) throws NotFoundException {
-        Optional<User> userOptional = userRepository.findById(id);
+    public User updateRoleByUsername(String username, UserRole role) throws NotFoundException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
-            String message = "User with the id " + id + " does not exist";
+            String message = "User with the username " + username + " does not exist";
             log.error(message);
             throw new NotFoundException(message);
         }
@@ -116,17 +130,39 @@ public class UserServiceImpl implements UserService {
         User user = userOptional.get();
         user.setRole(role);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
-    public void delete(Long id) throws NotFoundException {
-        if (!userRepository.existsById(id)) {
-            String message = "User with the id " + id + " does not exist";
+    public void deleteByUsername(String username) throws NotFoundException {
+        if (!userRepository.existsByUsername(username)) {
+            String message = "User with the id " + username + " does not exist";
             log.error(message);
             throw new NotFoundException(message);
         }
 
-        userRepository.deleteById(id);
+        userRepository.deleteByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            String message = "user with the username " + username + " does not exist.";
+            log.error(message);
+            throw new UsernameNotFoundException(message);
+        }
+
+        User user = userOptional.get();
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities
+        );
     }
 }

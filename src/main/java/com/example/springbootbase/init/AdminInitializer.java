@@ -42,7 +42,7 @@ public class AdminInitializer implements ApplicationRunner {
                     .build();
 
             User savedUser = userService.save(user);
-            userService.updateRole(savedUser.getId(), UserRole.ADMIN);
+            userService.updateRoleByUsername(savedUser.getUsername(), UserRole.ADMIN);
         }
     }
 }

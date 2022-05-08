@@ -5,25 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserCommand {
-    private String firstName;
-    private String lastName;
-
-    @NotNull
-    @NotBlank
-    private String username;
-
-    @NotNull
-    @NotBlank
-    @Email
-    private String email;
-
+public class UserUpdatePasswordCommand {
     @NotNull
     @NotBlank
     @Size(min = 8)

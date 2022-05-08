@@ -10,17 +10,17 @@ import java.util.Optional;
 public interface UserService {
     User save(User user) throws ConflictException;
 
-    Optional<User> findById(Long id);
+    Optional<User> find(Long id);
 
     Optional<User> findByUsername(String username);
 
     Optional<User> findByEmail(String email);
 
-    User update(Long id, User updatedUser) throws NotFoundException, ConflictException;
+    User updateByUsername(String username, User updatedUser) throws NotFoundException, ConflictException;
 
-    void updatePassword(Long id, String password) throws NotFoundException;
+    User updatePasswordByUsername(String username, String password) throws NotFoundException;
 
-    void updateRole(Long id, UserRole role) throws NotFoundException;
+    User updateRoleByUsername(String username, UserRole role) throws NotFoundException;
 
-    void delete(Long id) throws NotFoundException;
+    void deleteByUsername(String username) throws NotFoundException;
 }

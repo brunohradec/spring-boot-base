@@ -2,7 +2,7 @@ package com.example.springbootbase.mapper;
 
 import com.example.springbootbase.domain.User;
 import com.example.springbootbase.dto.UserDto;
-import com.example.springbootbase.dto.command.UserCommand;
+import com.example.springbootbase.dto.command.UserRegistrationCommand;
 import com.example.springbootbase.dto.command.UserUpdateCommand;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +19,13 @@ public class UserMapper {
                 .build();
     }
 
-    public User toEntity(UserCommand userCommand) {
+    public User toEntity(UserRegistrationCommand userRegistrationCommand) {
         return User.builder()
-                .firstName(userCommand.getFirstName())
-                .lastName(userCommand.getLastName())
-                .username(userCommand.getUsername())
-                .email(userCommand.getEmail())
-                .password(userCommand.getPassword())
+                .firstName(userRegistrationCommand.getFirstName())
+                .lastName(userRegistrationCommand.getLastName())
+                .username(userRegistrationCommand.getUsername())
+                .email(userRegistrationCommand.getEmail())
+                .password(userRegistrationCommand.getPassword())
                 .build();
     }
 
