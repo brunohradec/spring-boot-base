@@ -23,21 +23,21 @@ public class JwtUtility {
     @Value("${security.jwt.access-token.secret}")
     private String accessTokenSecret;
 
-    @Value("${security.jwt.access-token.expiration-time-milis}")
-    private Long accessTokenExpirationTimeMilis;
+    @Value("${security.jwt.access-token.expiration-time-millis}")
+    private Long accessTokenExpirationTimeMillis;
 
     @Value("${security.jwt.refresh-token.secret}")
     private String refreshTokenSecret;
 
-    @Value("${security.jwt.refresh-token.expiration-time-milis}")
-    private Long refreshTokenExpirationTimeMilis;
+    @Value("${security.jwt.refresh-token.expiration-time-millis}")
+    private Long refreshTokenExpirationTimeMillis;
 
     public String generateAccessToken(User user) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withIssuedAt(new Date())
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpirationTimeMilis))
+                .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpirationTimeMillis))
                 .withClaim("email", user.getEmail())
                 .withClaim("role", user.getRole().name())
                 .sign(Algorithm.HMAC256(accessTokenSecret));
@@ -48,7 +48,7 @@ public class JwtUtility {
                 .withIssuer(issuer)
                 .withIssuedAt(new Date())
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpirationTimeMilis))
+                .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpirationTimeMillis))
                 .sign(Algorithm.HMAC256(refreshTokenSecret));
     }
 

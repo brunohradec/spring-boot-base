@@ -10,7 +10,7 @@ security:
     issuer: ${JWT_ISSUER}
     access-token:
       secret: ${ACCESS_TOKEN_SECRET}
-      expiration-time-milis: ${ACCESS_TOKEN_EXPIRATION_TIME_MILIS:60000}
+      expiration-time-millis: ${ACCESS_TOKEN_EXPIRATION_TIME_MILLIS:60000}
     refresh-token:
       secret: ${REFRESH_TOKEN_SECRET}
-      expiration-time-milis: ${REFRESH_TOKEN_EXPIRATION_TIME_MILIS:604800000}
+      expiration-time-millis: ${REFRESH_TOKEN_EXPIRATION_TIME_MILLIS:604800000}
