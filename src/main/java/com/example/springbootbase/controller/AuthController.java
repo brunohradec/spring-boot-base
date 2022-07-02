@@ -52,9 +52,15 @@ public class AuthController {
     public ResponseEntity<UserDto> register(@RequestBody UserRegistrationCommand userRegistrationCommand) {
         try {
             User savedUser = userService.save(userMapper.toEntity(userRegistrationCommand));
-            return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDto(savedUser));
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(userMapper.toDto(savedUser));
         } catch (ConflictException exception) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 
@@ -71,11 +77,21 @@ public class AuthController {
                     .refreshToken(tokens.get("refresh-token"))
                     .build();
 
-            return ResponseEntity.status(HttpStatus.OK).body(userLoginDto);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(userLoginDto);
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    exception.getMessage(),
+                    exception
+            );
         } catch (AuthenticationException exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or password incorrect.");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Username or password incorrect.",
+                    exception
+            );
         }
     }
 
@@ -83,7 +99,9 @@ public class AuthController {
     public ResponseEntity<UserDto> getCurrentlyAuthenticatedUser() {
         return authService
                 .getCurrentlyAuthenticatedUser()
-                .map(user -> ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(user)))
+                .map(user -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(userMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "No currently authenticated user.")
@@ -94,15 +112,33 @@ public class AuthController {
     public ResponseEntity<AccessTokenDto> refreshAccessToken(@RequestBody RefreshTokenCommand refreshTokenCommand) {
         try {
             String accessToken = authService.refreshAccessToken(refreshTokenCommand.getRefreshToken());
-            return ResponseEntity.status(HttpStatus.OK).body(new AccessTokenDto(accessToken));
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new AccessTokenDto(accessToken));
         } catch (SignatureVerificationException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Could not verify access token signature.");
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Could not verify access token signature.",
+                    exception
+            );
         } catch (TokenExpiredException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token has timed out.");
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Access token has timed out.",
+                    exception
+            );
         } catch (JWTVerificationException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token is not valid.");
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Access token is not valid.",
+                    exception
+            );
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 }

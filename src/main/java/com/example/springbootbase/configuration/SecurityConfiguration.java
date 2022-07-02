@@ -36,12 +36,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.userDetailsService(userDetailsService);
 
         http.authorizeHttpRequests()
-                .antMatchers("/api/auth/me/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/users/{username}/role/**").hasRole(UserRole.ADMIN.name())
-                .antMatchers(HttpMethod.PUT, "/api/users/{username}/password/**").hasRole(UserRole.ADMIN.name())
-                .antMatchers(HttpMethod.DELETE, "/api/users/{username}/**").hasRole(UserRole.ADMIN.name())
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/**").authenticated();
+                .antMatchers("/api/auth/me/**")
+                    .authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/users/{username}/role/**")
+                    .hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.PUT, "/api/users/{username}/password/**")
+                    .hasRole(UserRole.ADMIN.name())
+                .antMatchers(HttpMethod.DELETE, "/api/users/{username}/**")
+                    .hasRole(UserRole.ADMIN.name())
+                .antMatchers("/api/auth/**")
+                    .permitAll()
+                .antMatchers("/api/**")
+                    .authenticated();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }

@@ -36,7 +36,9 @@ public class UserController {
     public ResponseEntity<UserDto> find(@PathVariable Long id) {
         return userService
                 .find(id)
-                .map(user -> ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(user)))
+                .map(user -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(userMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User with the id " + id + " could not be found.")
@@ -47,7 +49,9 @@ public class UserController {
     public ResponseEntity<UserDto> findByUsername(@RequestParam String username) {
         return userService
                 .findByUsername(username)
-                .map(user -> ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(user)))
+                .map(user -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(userMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User with the username " + username + " could not be found.")
@@ -58,7 +62,9 @@ public class UserController {
     public ResponseEntity<UserDto> findByEmail(@RequestParam String email) {
         return userService
                 .findByEmail(email)
-                .map(user -> ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(user)))
+                .map(user -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(userMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User with the email " + email + " could not be found.")
@@ -72,11 +78,21 @@ public class UserController {
 
         try {
             User updatedUser = userService.updateByUsername(username, userMapper.toEntity(userUpdateCommand));
-            return ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(updatedUser));
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(userMapper.toDto(updatedUser));
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    exception.getMessage(),
+                    exception
+            );
         } catch (ConflictException exception) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 
@@ -95,9 +111,15 @@ public class UserController {
                     userUpdatePasswordCommand.getPassword()
             );
 
-            return ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(updatedUser));
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(userMapper.toDto(updatedUser));
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 
@@ -108,9 +130,15 @@ public class UserController {
 
         try {
             User updatedUser = userService.updatePasswordByUsername(username, userUpdatePasswordCommand.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(updatedUser));
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(userMapper.toDto(updatedUser));
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 
@@ -121,9 +149,15 @@ public class UserController {
 
         try {
             User updatedUser = userService.updateRoleByUsername(username, userUpdateRoleCommand.getRole());
-            return ResponseEntity.status(HttpStatus.OK).body(userMapper.toDto(updatedUser));
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(userMapper.toDto(updatedUser));
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 
@@ -131,9 +165,15 @@ public class UserController {
     public ResponseEntity<Void> deleteByUsername(@PathVariable String username) {
         try {
             userService.deleteByUsername(username);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .build();
         } catch (NotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    exception.getMessage(),
+                    exception
+            );
         }
     }
 }
