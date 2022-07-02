@@ -1,14 +1,14 @@
 package com.example.springbootbase.controller;
 
-import com.example.springbootbase.domain.User;
-import com.example.springbootbase.dto.UserDto;
-import com.example.springbootbase.dto.command.UserUpdateCommand;
-import com.example.springbootbase.dto.command.UserUpdatePasswordCommand;
+import com.example.springbootbase.domain.AppUser;
+import com.example.springbootbase.dto.AppUserDto;
+import com.example.springbootbase.dto.command.AppUserUpdateCommand;
+import com.example.springbootbase.dto.command.AppUserUpdatePasswordCommand;
 import com.example.springbootbase.dto.command.UserUpdateRoleCommand;
 import com.example.springbootbase.exception.ConflictException;
 import com.example.springbootbase.exception.NotFoundException;
-import com.example.springbootbase.mapper.UserMapper;
-import com.example.springbootbase.service.UserService;
+import com.example.springbootbase.mapper.AppUserMapper;
+import com.example.springbootbase.service.AppUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,25 +20,25 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
-    private final UserService userService;
-    private final UserMapper userMapper;
+public class AppUserController {
+    private final AppUserService appUserService;
+    private final AppUserMapper appUserMapper;
 
-    public UserController(
-            UserService userService,
-            UserMapper userMapper) {
+    public AppUserController(
+            AppUserService appUserService,
+            AppUserMapper appUserMapper) {
 
-        this.userService = userService;
-        this.userMapper = userMapper;
+        this.appUserService = appUserService;
+        this.appUserMapper = appUserMapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> find(@PathVariable Long id) {
-        return userService
+    public ResponseEntity<AppUserDto> find(@PathVariable Long id) {
+        return appUserService
                 .find(id)
                 .map(user -> ResponseEntity
                         .status(HttpStatus.OK)
-                        .body(userMapper.toDto(user)))
+                        .body(appUserMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User with the id " + id + " could not be found.")
@@ -46,12 +46,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/", params = "username")
-    public ResponseEntity<UserDto> findByUsername(@RequestParam String username) {
-        return userService
+    public ResponseEntity<AppUserDto> findByUsername(@RequestParam String username) {
+        return appUserService
                 .findByUsername(username)
                 .map(user -> ResponseEntity
                         .status(HttpStatus.OK)
-                        .body(userMapper.toDto(user)))
+                        .body(appUserMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User with the username " + username + " could not be found.")
@@ -59,12 +59,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/", params = "email")
-    public ResponseEntity<UserDto> findByEmail(@RequestParam String email) {
-        return userService
+    public ResponseEntity<AppUserDto> findByEmail(@RequestParam String email) {
+        return appUserService
                 .findByEmail(email)
                 .map(user -> ResponseEntity
                         .status(HttpStatus.OK)
-                        .body(userMapper.toDto(user)))
+                        .body(appUserMapper.toDto(user)))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User with the email " + email + " could not be found.")
@@ -72,15 +72,15 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<UserDto> update(
+    public ResponseEntity<AppUserDto> update(
             @PathVariable String username,
-            @Valid @RequestBody UserUpdateCommand userUpdateCommand) {
+            @Valid @RequestBody AppUserUpdateCommand appUserUpdateCommand) {
 
         try {
-            User updatedUser = userService.updateByUsername(username, userMapper.toEntity(userUpdateCommand));
+            AppUser updatedAppUser = appUserService.updateByUsername(username, appUserMapper.toEntity(appUserUpdateCommand));
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(userMapper.toDto(updatedUser));
+                    .body(appUserMapper.toDto(updatedAppUser));
         } catch (NotFoundException exception) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -97,8 +97,8 @@ public class UserController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<UserDto> updatePasswordForCurrentUser(
-            @Valid @RequestBody UserUpdatePasswordCommand userUpdatePasswordCommand) {
+    public ResponseEntity<AppUserDto> updatePasswordForCurrentUser(
+            @Valid @RequestBody AppUserUpdatePasswordCommand appUserUpdatePasswordCommand) {
 
         try {
             UserDetails currentlySignedInUser = (UserDetails) SecurityContextHolder
@@ -106,14 +106,14 @@ public class UserController {
                     .getAuthentication()
                     .getPrincipal();
 
-            User updatedUser = userService.updatePasswordByUsername(
+            AppUser updatedAppUser = appUserService.updatePasswordByUsername(
                     currentlySignedInUser.getUsername(),
-                    userUpdatePasswordCommand.getPassword()
+                    appUserUpdatePasswordCommand.getPassword()
             );
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(userMapper.toDto(updatedUser));
+                    .body(appUserMapper.toDto(updatedAppUser));
         } catch (NotFoundException exception) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -124,15 +124,15 @@ public class UserController {
     }
 
     @PutMapping("/{username}/password")
-    public ResponseEntity<UserDto> updatePassword(
+    public ResponseEntity<AppUserDto> updatePassword(
             @PathVariable String username,
-            @RequestBody UserUpdatePasswordCommand userUpdatePasswordCommand) {
+            @RequestBody AppUserUpdatePasswordCommand appUserUpdatePasswordCommand) {
 
         try {
-            User updatedUser = userService.updatePasswordByUsername(username, userUpdatePasswordCommand.getPassword());
+            AppUser updatedAppUser = appUserService.updatePasswordByUsername(username, appUserUpdatePasswordCommand.getPassword());
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(userMapper.toDto(updatedUser));
+                    .body(appUserMapper.toDto(updatedAppUser));
         } catch (NotFoundException exception) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -143,15 +143,15 @@ public class UserController {
     }
 
     @PutMapping("/{username}/role")
-    public ResponseEntity<UserDto> updateRole(
+    public ResponseEntity<AppUserDto> updateRole(
             @PathVariable String username,
             @RequestBody UserUpdateRoleCommand userUpdateRoleCommand) {
 
         try {
-            User updatedUser = userService.updateRoleByUsername(username, userUpdateRoleCommand.getRole());
+            AppUser updatedAppUser = appUserService.updateRoleByUsername(username, userUpdateRoleCommand.getRole());
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(userMapper.toDto(updatedUser));
+                    .body(appUserMapper.toDto(updatedAppUser));
         } catch (NotFoundException exception) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -164,7 +164,7 @@ public class UserController {
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteByUsername(@PathVariable String username) {
         try {
-            userService.deleteByUsername(username);
+            appUserService.deleteByUsername(username);
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .build();

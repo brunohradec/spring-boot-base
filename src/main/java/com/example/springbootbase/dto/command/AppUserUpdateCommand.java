@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserUpdateCommand {
+public class AppUserUpdateCommand {
     private String firstName;
     private String lastName;
 

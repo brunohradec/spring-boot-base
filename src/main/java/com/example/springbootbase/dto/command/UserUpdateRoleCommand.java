@@ -1,6 +1,6 @@
 package com.example.springbootbase.dto.command;
 
-import com.example.springbootbase.domain.enumeration.UserRole;
+import com.example.springbootbase.domain.enumeration.AppUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +14,5 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class UserUpdateRoleCommand {
     @NotNull
-    private UserRole role;
+    private AppUserRole role;
 }

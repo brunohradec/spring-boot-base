@@ -1,8 +1,8 @@
 package com.example.springbootbase.init;
 
-import com.example.springbootbase.domain.User;
-import com.example.springbootbase.domain.enumeration.UserRole;
-import com.example.springbootbase.service.UserService;
+import com.example.springbootbase.domain.AppUser;
+import com.example.springbootbase.domain.enumeration.AppUserRole;
+import com.example.springbootbase.service.AppUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class AdminInitializer implements ApplicationRunner {
-    private final UserService userService;
+    private final AppUserService appUserService;
 
-    public AdminInitializer(UserService userService) {
-        this.userService = userService;
+    public AdminInitializer(AppUserService appUserService) {
+        this.appUserService = appUserService;
     }
 
     @Value("${security.admin.username}")
@@ -29,20 +29,20 @@ public class AdminInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (userService.findByUsername(adminUsername).isEmpty()) {
+        if (appUserService.findByUsername(adminUsername).isEmpty()) {
             log.info(
                     "Admin user with the username {} does not exist. Creating admin user.",
                     adminUsername
             );
 
-            User user = User.builder()
+            AppUser appUser = AppUser.builder()
                     .username(adminUsername)
                     .email(adminEmail)
                     .password(adminPassword)
                     .build();
 
-            User savedUser = userService.save(user);
-            userService.updateRoleByUsername(savedUser.getUsername(), UserRole.ADMIN);
+            AppUser savedAppUser = appUserService.save(appUser);
+            appUserService.updateRoleByUsername(savedAppUser.getUsername(), AppUserRole.ADMIN);
         }
     }
 }

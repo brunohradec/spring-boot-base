@@ -2,10 +2,10 @@ package com.example.springbootbase.service.impl;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.example.springbootbase.domain.User;
+import com.example.springbootbase.domain.AppUser;
 import com.example.springbootbase.exception.NotFoundException;
 import com.example.springbootbase.service.AuthService;
-import com.example.springbootbase.service.UserService;
+import com.example.springbootbase.service.AppUserService;
 import com.example.springbootbase.utility.JwtUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,16 +22,16 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
-    private final UserService userService;
+    private final AppUserService appUserService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtility jwtUtility;
 
     public AuthServiceImpl(
-            UserService userService,
+            AppUserService appUserService,
             AuthenticationManager authenticationManager,
             JwtUtility jwtUtility) {
 
-        this.userService = userService;
+        this.appUserService = appUserService;
         this.authenticationManager = authenticationManager;
         this.jwtUtility = jwtUtility;
     }
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Logging in user with the username {}.", username);
 
-        Optional<User> userOptional = userService.findByUsername(username);
+        Optional<AppUser> userOptional = appUserService.findByUsername(username);
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist.";
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
             throw new NotFoundException(message);
         }
 
-        User user = userOptional.get();
+        AppUser appUser = userOptional.get();
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 username,
@@ -67,8 +67,8 @@ public class AuthServiceImpl implements AuthService {
                 username
         );
 
-        String accessToken = jwtUtility.generateAccessToken(user);
-        String refreshToken = jwtUtility.generateRefreshToken(user);
+        String accessToken = jwtUtility.generateAccessToken(appUser);
+        String refreshToken = jwtUtility.generateRefreshToken(appUser);
 
         Map<String, String> tokens = new HashMap<>();
 
@@ -79,13 +79,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Optional<User> getCurrentlyAuthenticatedUser() {
+    public Optional<AppUser> getCurrentlyAuthenticatedUser() {
         UserDetails principal = (UserDetails) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
 
-        return userService.findByUsername(principal.getUsername());
+        return appUserService.findByUsername(principal.getUsername());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
             NotFoundException {
 
         String username = jwtUtility.validateRefreshTokenAndRetrieveSubject(refreshToken);
-        Optional<User> userOptional = userService.findByUsername(username);
+        Optional<AppUser> userOptional = appUserService.findByUsername(username);
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist.";
@@ -103,8 +103,8 @@ public class AuthServiceImpl implements AuthService {
             throw new NotFoundException(message);
         }
 
-        User user = userOptional.get();
+        AppUser appUser = userOptional.get();
 
-        return jwtUtility.generateAccessToken(user);
+        return jwtUtility.generateAccessToken(appUser);
     }
 }

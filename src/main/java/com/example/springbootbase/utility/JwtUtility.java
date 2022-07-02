@@ -7,7 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.springbootbase.domain.User;
+import com.example.springbootbase.domain.AppUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,22 +32,22 @@ public class JwtUtility {
     @Value("${security.jwt.refresh-token.expiration-time-millis}")
     private Long refreshTokenExpirationTimeMillis;
 
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(AppUser appUser) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withIssuedAt(new Date())
-                .withSubject(user.getUsername())
+                .withSubject(appUser.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpirationTimeMillis))
-                .withClaim("email", user.getEmail())
-                .withClaim("role", user.getRole().name())
+                .withClaim("email", appUser.getEmail())
+                .withClaim("role", appUser.getRole().name())
                 .sign(Algorithm.HMAC256(accessTokenSecret));
     }
 
-    public String generateRefreshToken(User user) {
+    public String generateRefreshToken(AppUser appUser) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withIssuedAt(new Date())
-                .withSubject(user.getUsername())
+                .withSubject(appUser.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpirationTimeMillis))
                 .sign(Algorithm.HMAC256(refreshTokenSecret));
     }

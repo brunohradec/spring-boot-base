@@ -1,7 +1,7 @@
 package com.example.springbootbase.service;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.example.springbootbase.domain.User;
+import com.example.springbootbase.domain.AppUser;
 import com.example.springbootbase.exception.NotFoundException;
 import org.springframework.security.core.AuthenticationException;
 
@@ -13,7 +13,7 @@ public interface AuthService {
             NotFoundException,
             AuthenticationException;
 
-    Optional<User> getCurrentlyAuthenticatedUser();
+    Optional<AppUser> getCurrentlyAuthenticatedUser();
 
     String refreshAccessToken(String refreshToken) throws JWTVerificationException, NotFoundException;
 }

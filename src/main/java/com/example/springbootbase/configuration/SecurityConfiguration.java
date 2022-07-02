@@ -1,6 +1,6 @@
 package com.example.springbootbase.configuration;
 
-import com.example.springbootbase.domain.enumeration.UserRole;
+import com.example.springbootbase.domain.enumeration.AppUserRole;
 import com.example.springbootbase.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,11 +39,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/me/**")
                     .authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/users/{username}/role/**")
-                    .hasRole(UserRole.ADMIN.name())
+                    .hasRole(AppUserRole.ADMIN.name())
                 .antMatchers(HttpMethod.PUT, "/api/users/{username}/password/**")
-                    .hasRole(UserRole.ADMIN.name())
+                    .hasRole(AppUserRole.ADMIN.name())
                 .antMatchers(HttpMethod.DELETE, "/api/users/{username}/**")
-                    .hasRole(UserRole.ADMIN.name())
+                    .hasRole(AppUserRole.ADMIN.name())
                 .antMatchers("/api/auth/**")
                     .permitAll()
                 .antMatchers("/api/**")

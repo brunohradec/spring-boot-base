@@ -1,6 +1,6 @@
 package com.example.springbootbase.dto;
 
-import com.example.springbootbase.domain.enumeration.UserRole;
+import com.example.springbootbase.domain.enumeration.AppUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class AppUserDto {
     private Long id;
     private String firstName;
     private String lastName;
     private String username;
     private String email;
-    private UserRole role;
+    private AppUserRole role;
 }

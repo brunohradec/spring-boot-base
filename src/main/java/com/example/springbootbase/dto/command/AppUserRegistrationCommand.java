@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRegistrationCommand {
+public class AppUserRegistrationCommand {
     private String firstName;
     private String lastName;
 

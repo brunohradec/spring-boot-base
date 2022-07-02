@@ -1,14 +1,14 @@
 package com.example.springbootbase.repository;
 
-import com.example.springbootbase.domain.User;
+import com.example.springbootbase.domain.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+public interface AppUserRepository extends JpaRepository<AppUser, Long> {
+    Optional<AppUser> findByUsername(String username);
 
-    Optional<User> findByEmail(String email);
+    Optional<AppUser> findByEmail(String email);
 
     Boolean existsByUsername(String username);
 
