@@ -1,5 +1,5 @@
 package com.example.springbootbase.domain.enumeration;
 
 public enum AppUserRole {
-    USER, ADMIN
+    ROLE_USER, ROLE_ADMIN
 }

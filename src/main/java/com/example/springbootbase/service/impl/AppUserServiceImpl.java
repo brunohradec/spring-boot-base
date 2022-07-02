@@ -50,7 +50,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
             throw new ConflictException(message);
         }
 
-        appUser.setRole(AppUserRole.USER);
+        appUser.setRole(AppUserRole.ROLE_USER);
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
         return appUserRepository.save(appUser);

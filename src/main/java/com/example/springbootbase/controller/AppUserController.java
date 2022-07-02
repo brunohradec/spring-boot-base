@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
@@ -162,6 +163,7 @@ public class AppUserController {
     }
 
     @DeleteMapping("/{username}")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<Void> deleteByUsername(@PathVariable String username) {
         try {
             appUserService.deleteByUsername(username);
