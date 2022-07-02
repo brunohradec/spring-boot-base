@@ -103,9 +103,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     userDetails.getAuthorities()
             );
 
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         } catch (SignatureVerificationException exception) {
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
