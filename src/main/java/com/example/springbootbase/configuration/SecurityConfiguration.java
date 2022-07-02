@@ -1,10 +1,8 @@
 package com.example.springbootbase.configuration;
 
-import com.example.springbootbase.domain.enumeration.AppUserRole;
 import com.example.springbootbase.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,11 +41,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeHttpRequests()
                 .antMatchers("/api/auth/me/**")
-                    .authenticated()
+                .authenticated()
                 .antMatchers("/api/auth/**")
-                    .permitAll()
+                .permitAll()
                 .antMatchers("/api/**")
-                    .authenticated();
+                .authenticated();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
