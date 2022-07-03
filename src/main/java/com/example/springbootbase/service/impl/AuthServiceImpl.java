@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist.";
-            log.error(message);
+            log.info(message);
             throw new NotFoundException(message);
         }
 
@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist.";
-            log.error(message);
+            log.info(message);
             throw new NotFoundException(message);
         }
 

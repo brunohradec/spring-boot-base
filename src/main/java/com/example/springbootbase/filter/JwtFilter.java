@@ -66,20 +66,18 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Access token is provided in the authorization header.
         if (authorizationHeader == null || authorizationHeader.isBlank()) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Authorization header not found or empty."
-            );
+            String message = "Request authorization header not found or empty.";
+            log.debug(message);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 
             return;
         }
 
         // Access token is provided in the authorization header in the format "Bearer ACCESS_TOKEN".
         if (authorizationHeader.isBlank() || !authorizationHeader.startsWith(tokenPrefix)) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Authorization header does not contain the bearer token."
-            );
+            String message = "Request authorization header does not contain the bearer token.";
+            log.debug(message);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 
             return;
         }
@@ -87,10 +85,9 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = authorizationHeader.substring(tokenPrefix.length());
 
         if (accessToken.isBlank()) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Access token not found in the authorization header."
-            );
+            String message = "Access token not found in the request authorization header.";
+            log.debug(message);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 
             return;
         }
@@ -105,29 +102,28 @@ public class JwtFilter extends OncePerRequestFilter {
                     userDetails.getAuthorities()
             );
 
-            log.info("username: " + userDetails.getUsername());
-            log.info("authorities: " + userDetails.getAuthorities());
+            log.debug(
+                    "JWT check successful. User with username {} saved to security context.",
+                    userDetails.getUsername()
+            );
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         } catch (SignatureVerificationException exception) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Could not verify access token signature."
-            );
+            String message = "Could not verify access token signature.";
+            log.debug(message);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 
             return;
         } catch (TokenExpiredException exception) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Access token has timed out."
-            );
+            String message = "Access token has timed out.";
+            log.debug(message);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 
             return;
         } catch (JWTVerificationException exception) {
-            response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "Access token is not valid."
-            );
+            String message = "Access token is not valid.";
+            log.debug(message);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 
             return;
         }

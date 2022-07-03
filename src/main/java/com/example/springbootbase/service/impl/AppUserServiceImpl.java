@@ -40,13 +40,13 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     public AppUser save(AppUser appUser) throws ConflictException {
         if (appUserRepository.existsByUsername(appUser.getUsername())) {
             String message = "User with the username " + appUser.getUsername() + " already exists.";
-            log.error(message);
+            log.info(message);
             throw new ConflictException(message);
         }
 
         if (appUserRepository.existsByEmail(appUser.getEmail())) {
             String message = "User with the email " + appUser.getEmail() + " already exists.";
-            log.error(message);
+            log.info(message);
             throw new ConflictException(message);
         }
 
@@ -77,7 +77,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist";
-            log.error(message);
+            log.info(message);
             throw new NotFoundException(message);
         }
 
@@ -85,13 +85,13 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
         if (!updatedAppUser.getUsername().equals(appUser.getUsername())) {
             String message = "User with the username " + appUser.getUsername() + " already exists.";
-            log.error(message);
+            log.info(message);
             throw new ConflictException(message);
         }
 
         if (!updatedAppUser.getEmail().equals(appUser.getEmail())) {
             String message = "User with the email " + appUser.getEmail() + " already exists.";
-            log.error(message);
+            log.info(message);
             throw new ConflictException(message);
         }
 
@@ -108,7 +108,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist";
-            log.error(message);
+            log.info(message);
             throw new NotFoundException(message);
         }
 
@@ -124,7 +124,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
         if (userOptional.isEmpty()) {
             String message = "User with the username " + username + " does not exist";
-            log.error(message);
+            log.info(message);
             throw new NotFoundException(message);
         }
 
@@ -138,7 +138,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     public void deleteByUsername(String username) throws NotFoundException {
         if (!appUserRepository.existsByUsername(username)) {
             String message = "User with the id " + username + " does not exist";
-            log.error(message);
+            log.info(message);
             throw new NotFoundException(message);
         }
 
@@ -151,7 +151,7 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
         if (userOptional.isEmpty()) {
             String message = "user with the username " + username + " does not exist.";
-            log.error(message);
+            log.info(message);
             throw new UsernameNotFoundException(message);
         }
 

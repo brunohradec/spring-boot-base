@@ -62,13 +62,13 @@ public class JwtUtility {
             DecodedJWT decodedJWT = jwtVerifier.verify(accessToken);
             return decodedJWT.getSubject();
         } catch (SignatureVerificationException exception) {
-            log.error("Access token signature not valid");
+            log.debug("Access token signature not valid");
             throw exception;
         } catch (TokenExpiredException exception) {
-            log.error("Access token has expired");
+            log.debug("Access token has expired");
             throw exception;
         } catch (JWTVerificationException exception) {
-            log.error("Access token is not valid.", exception);
+            log.debug("Access token is not valid.", exception);
             throw exception;
         }
     }
@@ -83,13 +83,13 @@ public class JwtUtility {
             DecodedJWT decodedJWT = jwtVerifier.verify(refreshToken);
             return decodedJWT.getSubject();
         } catch (SignatureVerificationException exception) {
-            log.error("Access token signature not valid");
+            log.debug("Access token signature not valid");
             throw exception;
         } catch (TokenExpiredException exception) {
-            log.error("Access token has expired");
+            log.debug("Access token has expired");
             throw exception;
         } catch (JWTVerificationException exception) {
-            log.error("Access token is not valid.", exception);
+            log.debug("Access token is not valid.", exception);
             throw exception;
         }
     }
