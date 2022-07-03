@@ -78,7 +78,11 @@ public class AppUserController {
             @Valid @RequestBody AppUserUpdateCommand appUserUpdateCommand) {
 
         try {
-            AppUser updatedAppUser = appUserService.updateByUsername(username, appUserMapper.toEntity(appUserUpdateCommand));
+            AppUser updatedAppUser = appUserService.updateByUsername(
+                    username,
+                    appUserMapper.toEntity(appUserUpdateCommand)
+            );
+
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(appUserMapper.toDto(updatedAppUser));
@@ -125,6 +129,7 @@ public class AppUserController {
     }
 
     @PutMapping("/{username}/password")
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<AppUserDto> updatePassword(
             @PathVariable String username,
             @RequestBody AppUserUpdatePasswordCommand appUserUpdatePasswordCommand) {
@@ -144,6 +149,7 @@ public class AppUserController {
     }
 
     @PutMapping("/{username}/role")
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<AppUserDto> updateRole(
             @PathVariable String username,
             @RequestBody UserUpdateRoleCommand userUpdateRoleCommand) {
