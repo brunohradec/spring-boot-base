@@ -15,10 +15,8 @@ import com.example.springbootbase.exception.NotFoundException;
 import com.example.springbootbase.mapper.AppUserMapper;
 import com.example.springbootbase.service.AppUserService;
 import com.example.springbootbase.service.AuthService;
-import com.example.springbootbase.utility.JwtUtility;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,21 +29,15 @@ public class AuthController {
     private final AuthService authService;
     private final AppUserService appUserService;
     private final AppUserMapper appUserMapper;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtility jwtUtility;
 
     public AuthController(
             AuthService authService,
             AppUserService appUserService,
-            AppUserMapper appUserMapper,
-            AuthenticationManager authenticationManager,
-            JwtUtility jwtUtility) {
+            AppUserMapper appUserMapper) {
 
         this.authService = authService;
         this.appUserService = appUserService;
         this.appUserMapper = appUserMapper;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtility = jwtUtility;
     }
 
     @PostMapping("/register")

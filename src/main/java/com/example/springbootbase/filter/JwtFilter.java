@@ -5,14 +5,11 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.springbootbase.utility.JwtUtility;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -20,17 +17,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-@Configuration
+/* JwtFilter is not a component or a bean. It has to be instantiated
+ * manually when adding it to the filter chain in security config.
+ * Other beans needed by the JwtFilter must be injected manually during
+ * object creation by providing the references to them to the constructor.
+ * JwtFilter must not be a component or a bean as spring security would
+ * then pick it up automatically and add it to the filter chain behind
+ * default built-in spring security filters. That would cause it to be added
+ * twice, once in the security config in addFilterBefore method and once by
+ * spring security. */
+
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtUtility jwtUtility;
     private final String tokenPrefix = "Bearer ";
-
-    private final List<RequestMatcher> ignoredPaths = new ArrayList<>();
 
     public JwtFilter(
             UserDetailsService userDetailsService,
@@ -38,10 +40,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         this.userDetailsService = userDetailsService;
         this.jwtUtility = jwtUtility;
-
-        this.ignoredPaths.add(new AntPathRequestMatcher("/api/auth/login/**"));
-        this.ignoredPaths.add(new AntPathRequestMatcher("/api/auth/register/**"));
-        this.ignoredPaths.add(new AntPathRequestMatcher("/api/auth/refresh-access-token/**"));
     }
 
     @Override
@@ -49,18 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-
-        /* Some paths do not get filtered by this filter. The permitAll in security
-         * configuration only checks if authenticated user is present in the security
-         * context, it does not disable the filter chain as it is needed for authentication.
-         * Because of that, without path ignoring this filter would still return the
-         * error response on paths where permitAll is present.  */
-        for (RequestMatcher ignoredPath : ignoredPaths) {
-            if (ignoredPath.matches(request)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-        }
 
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 

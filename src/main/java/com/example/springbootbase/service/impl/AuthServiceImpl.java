@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -80,12 +79,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Optional<AppUser> getCurrentlyAuthenticatedUser() {
-        UserDetails principal = (UserDetails) SecurityContextHolder
+        String principalUsername = (String) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
 
-        return appUserService.findByUsername(principal.getUsername());
+        return appUserService.findByUsername(principalUsername);
     }
 
     @Override

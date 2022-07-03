@@ -1,11 +1,13 @@
 package com.example.springbootbase.configuration;
 
 import com.example.springbootbase.filter.JwtFilter;
+import com.example.springbootbase.utility.JwtUtility;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,14 +23,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
-    private final JwtFilter jwtFilter;
+    private final JwtUtility jwtUtility;
 
     public SecurityConfiguration(
             UserDetailsService userDetailsService,
-            JwtFilter jwtFilter) {
+            JwtUtility jwtUtility) {
 
         this.userDetailsService = userDetailsService;
-        this.jwtFilter = jwtFilter;
+        this.jwtUtility = jwtUtility;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers("/api/auth/register")
+                .antMatchers("/api/auth/login")
+                .antMatchers("/api/auth/refresh-access-token");
     }
 
     @Override
@@ -41,13 +51,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeHttpRequests()
                 .antMatchers("/api/auth/me/**")
-                    .authenticated()
+                .authenticated()
                 .antMatchers("/api/auth/**")
-                    .permitAll()
+                .permitAll()
                 .antMatchers("/api/**")
-                    .authenticated();
+                .authenticated();
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        /* JwtFilter has to be instantiated manually here and userDetailsService
+         * and jwtUtility have to be injected manually as JwtFilter must not
+         * be a component or a bean as spring security would then pick it up
+         * and add it to the filter chain automatically behind default built-in
+         * spring security filters. That would cause it to be added twice,
+         * once here and once by spring security. */
+        http.addFilterBefore(
+                new JwtFilter(userDetailsService, jwtUtility),
+                UsernamePasswordAuthenticationFilter.class
+        );
     }
 
     @Bean
