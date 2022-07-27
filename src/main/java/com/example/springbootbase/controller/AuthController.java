@@ -21,6 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -41,7 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AppUserDto> register(@RequestBody AppUserRegistrationCommand appUserRegistrationCommand) {
+    public ResponseEntity<AppUserDto> register(@Valid @RequestBody AppUserRegistrationCommand appUserRegistrationCommand) {
         try {
             AppUser savedAppUser = appUserService.save(appUserMapper.toEntity(appUserRegistrationCommand));
             return ResponseEntity
@@ -57,7 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AppUserLoginDto> login(@RequestBody AppUserLoginCommand appUserLoginCommand) {
+    public ResponseEntity<AppUserLoginDto> login(@Valid @RequestBody AppUserLoginCommand appUserLoginCommand) {
         try {
             Map<String, String> tokens = authService.login(
                     appUserLoginCommand.getUsername(),
@@ -101,7 +102,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh-access-token")
-    public ResponseEntity<AccessTokenDto> refreshAccessToken(@RequestBody RefreshTokenCommand refreshTokenCommand) {
+    public ResponseEntity<AccessTokenDto> refreshAccessToken(@Valid @RequestBody RefreshTokenCommand refreshTokenCommand) {
         try {
             String accessToken = authService.refreshAccessToken(refreshTokenCommand.getRefreshToken());
             return ResponseEntity

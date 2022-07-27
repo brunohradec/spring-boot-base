@@ -1,5 +1,6 @@
 package com.example.springbootbase.dto.command;
 
+import com.example.springbootbase.validation.constraints.ValuesEqual;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ValuesEqual(
+        fields = {"password", "repeatedPassword"}
+)
 public class AppUserRegistrationCommand {
     private String firstName;
     private String lastName;
@@ -31,4 +35,7 @@ public class AppUserRegistrationCommand {
     @NotBlank
     @Size(min = 8)
     private String password;
+
+    @NotNull
+    private String repeatedPassword;
 }

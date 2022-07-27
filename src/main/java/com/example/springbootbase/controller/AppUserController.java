@@ -132,7 +132,7 @@ public class AppUserController {
     @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<AppUserDto> updatePassword(
             @PathVariable String username,
-            @RequestBody AppUserUpdatePasswordCommand appUserUpdatePasswordCommand) {
+            @Valid @RequestBody AppUserUpdatePasswordCommand appUserUpdatePasswordCommand) {
 
         try {
             AppUser updatedAppUser = appUserService.updatePasswordByUsername(username, appUserUpdatePasswordCommand.getPassword());
@@ -152,7 +152,7 @@ public class AppUserController {
     @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<AppUserDto> updateRole(
             @PathVariable String username,
-            @RequestBody UserUpdateRoleCommand userUpdateRoleCommand) {
+            @Valid @RequestBody UserUpdateRoleCommand userUpdateRoleCommand) {
 
         try {
             AppUser updatedAppUser = appUserService.updateRoleByUsername(username, userUpdateRoleCommand.getRole());
